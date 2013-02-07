@@ -70,9 +70,9 @@ use Data::Validator;
     sub set_context { $CONTEXT = $_[1] }
 }
 
-my @column_methods = grep {!CORE->can($_)} keys %SQL::Translator::Schema::Field::type_mapping;
-my @column_sugars  = qw/pk unique auto_increment/;
-my @export_methods = qw/create_database database create_table column/;
+my @column_methods = grep {!CORE->can($_)} keys(%SQL::Translator::Schema::Field::type_mapping), qw/tinyint string/;
+my @column_sugars  = qw/pk unique auto_increment unsigned null/;
+my @export_methods = qw/create_database database create_table column primary_key/;
 sub import {
     my $caller = caller;
 
@@ -133,6 +133,7 @@ sub create_table($$) {
 
 sub column($$;%) {
     my ($column_name, $data_type, %opt) = @_;
+    $data_type = 'varchar' if $data_type eq 'string';
 
     my $kls = caller;
     my $c = $kls->context;
@@ -142,22 +143,42 @@ sub column($$;%) {
 
     my %args = (
         name      => $column_name,
-        data_type => $data_type,
+        data_type => uc $data_type,
     );
 
     my %map = (
         null           => 'is_nullable',
         size           => 'size',
+        limit          => 'size',
         default        => 'default_value',
         unique         => 'is_unique',
         pk             => 'is_primary_key',
         auto_increment => 'is_auto_increment',
     );
     for my $key (keys %map) {
-        $args{$map{$key}}   = $opt{$key} if exists $opt{$key};
+        $args{$map{$key}}   = delete $opt{$key} if exists $opt{$key};
+    }
+    %args = (
+        %args,
+        %opt
+    );
+    if (exists $args{unsigned}) {
+        my $extra = $args{extra} || {};
+        $extra->{unsigned} = delete $args{unsigned};
+        $args{extra} = $extra;
+    }
+    if ($args{precision}) {
+        my $precision = delete $args{precision};
+        my $scale     = delete $args{scale} || 0;
+        $args{size} = [$precision, $scale];
     }
 
     push @{$creating_data->{columns}}, \%args;
+}
+
+sub primary_key {
+    my $column_name = shift;
+    column($column_name, 'integer', pk(), auto_increment(), @_);
 }
 
 for my $method (@column_methods) {
