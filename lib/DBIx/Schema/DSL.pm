@@ -71,12 +71,13 @@ use Data::Validator;
 }
 
 my @column_methods = grep {!CORE->can($_)} keys %SQL::Translator::Schema::Field::type_mapping;
-my @export_methods = qw/create_database database create_table column unique pk auto_increment/;
+my @column_sugars  = qw/pk unique auto_increment/;
+my @export_methods = qw/create_database database create_table column/;
 sub import {
     my $caller = caller;
 
     no strict 'refs';
-    for my $func (@export_methods, @column_methods) {
+    for my $func (@export_methods, @column_methods, @column_sugars) {
         *{"$caller\::$func"} = \&$func;
     }
 
@@ -169,7 +170,7 @@ for my $method (@column_methods) {
     };
 }
 
-for my $method (qw/unique pk auto_increment/) {
+for my $method (@column_sugars) {
     no strict 'refs';
     *{__PACKAGE__."::$method"} = sub {
         use strict 'refs';
