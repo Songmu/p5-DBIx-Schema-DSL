@@ -57,13 +57,14 @@ has translate => (
     lazy => 1,
     default => sub {
         my $self = shift;
-        $self->translator->translate(to => $self->db);
+        my $output = $self->translator->translate(to => $self->db);
+        # ignore initial commants.
+        1 while $output =~ s/\A--.*?\r?\n//ms;
+        $output;
     },
 );
 
 no Mouse;
-
-use Data::Validator;
 
 {
     our $CONTEXT;
@@ -71,6 +72,7 @@ use Data::Validator;
     sub set_context { $CONTEXT = $_[1] }
 }
 
+# don't override CORE::int
 my @column_methods = grep {!CORE->can($_)} keys(%SQL::Translator::Schema::Field::type_mapping), qw/tinyint string/;
 my @column_sugars  = qw/pk unique auto_increment unsigned null/;
 my @export_methods = qw/create_database database create_table column primary_key set_primary_key add_index add_unique_index/;
