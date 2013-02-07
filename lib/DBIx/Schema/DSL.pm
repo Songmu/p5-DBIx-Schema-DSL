@@ -17,6 +17,7 @@ has name => (
 has db => (
     is  => 'rw',
     isa => 'Str',
+    lazy => 1,
     default => 'MySQL',
 );
 

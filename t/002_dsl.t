@@ -6,7 +6,7 @@ use Test::More;
 package Hoge;
 use DBIx::Schema::DSL;
 
-database 'MySQL';
+#database 'MySQL';
 create_database 'test';
 
 create_table user => sub {
