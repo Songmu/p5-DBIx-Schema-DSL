@@ -73,7 +73,7 @@ use Data::Validator;
 
 my @column_methods = grep {!CORE->can($_)} keys(%SQL::Translator::Schema::Field::type_mapping), qw/tinyint string/;
 my @column_sugars  = qw/pk unique auto_increment unsigned null/;
-my @export_methods = qw/create_database database create_table column primary_key/;
+my @export_methods = qw/create_database database create_table column primary_key set_primary_key add_index add_unique_index/;
 sub import {
     my $caller = caller;
 
@@ -114,20 +114,30 @@ sub create_table($$) {
     my $c = $kls->context;
 
     $c->_creating_table({
-        table_name => $table_name,
+        table_name  => $table_name,
         columns     => [],
-        constraints => {},
+        indices     => [],
+        constraints => [],
+        primary_key => undef,
     });
 
     $code->();
 
+    my $data = $c->_creating_table;
     my $table = $c->schema->add_table(
         name   => $table_name,
         schema => $c,
     );
-    for my $column (@{ $c->_creating_table->{columns} }) {
+    for my $column (@{ $data->{columns} }) {
         $table->add_field(%{ $column } );
     }
+    for my $index (@{ $data->{indices} }) {
+        $table->add_index(%{ $index } );
+    }
+    for my $constraint (@{ $data->{constraints} }) {
+        $table->add_constraint(%{ $constraint } );
+    }
+    $table->primary_key($data->{primary_key}) if $data->{primary_key};
 
     $c->_clear_creating_table;
 }
@@ -140,7 +150,7 @@ sub column($$;%) {
     my $c = $kls->context;
 
     my $creating_data = $c->_creating_table
-        or die q{can't call column method outside `create_table` method};
+        or die q{can't call `column` method outside `create_table` method};
 
     my %args = (
         name      => $column_name,
@@ -173,6 +183,16 @@ sub column($$;%) {
         my $scale     = delete $args{scale} || 0;
         $args{size} = [$precision, $scale];
     }
+    if ($args{is_primary_key}) {
+        $creating_data->{primary_key} = $column_name;
+    }
+    elsif ($args{is_unique}) {
+        push @{$creating_data->{constraints}}, {
+            name   => "${column_name}_uniq",
+            fields => [$column_name],
+            type   => 'UNIQUE',
+        };
+    }
 
     push @{$creating_data->{columns}}, \%args;
 }
@@ -200,6 +220,49 @@ for my $method (@column_sugars) {
     };
 }
 
+sub set_primary_key(@) {
+    my @keys = @_;
+
+    my $kls = caller;
+    my $c = $kls->context;
+
+    my $creating_data = $c->_creating_table
+        or die q{can't call `set_primary_key` method outside `create_table` method};
+
+    $creating_data->{primary_key} = \@keys;
+}
+
+sub add_index {
+    my $kls = caller;
+    my $c = $kls->context;
+
+    my $creating_data = $c->_creating_table
+        or die q{can't call `add_index` method outside `create_table` method};
+
+    my ($idx_name, $fields, $type) = @_;
+
+    push @{$creating_data->{indices}}, {
+        name   => $idx_name,
+        fields => $fields,
+        ($type ? (type => $type) : ()),
+    };
+}
+
+sub add_unique_index {
+    my $kls = caller;
+    my $c = $kls->context;
+
+    my $creating_data = $c->_creating_table
+        or die q{can't call `add_unique_index` method outside `create_table` method};
+
+    my ($idx_name, $fields) = @_;
+
+    push @{$creating_data->{indices}}, {
+        name   => $idx_name,
+        fields => $fields,
+        type   => 'UNIQUE',
+    };
+}
 
 1;
 __END__

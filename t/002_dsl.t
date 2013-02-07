@@ -32,6 +32,15 @@ create_table author => sub {
     decimal 'height', precision => 4, scale => 1;
 };
 
+create_table user_purchase => sub {
+    integer  'id', auto_increment;
+    integer  'user_id';
+    datetime 'purchased_at';
+
+    set_primary_key qw/id purchased_at/;
+    add_index user_id_idx => [qw/user_id/];
+};
+
 package main;
 
 my $c = Hoge->context;
