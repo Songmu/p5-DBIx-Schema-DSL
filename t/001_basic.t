@@ -2,9 +2,15 @@
 use strict;
 use Test::More;
 
+package Hoge;
 use DBIx::Schema::DSL;
 
-# test DBIx::Schema::DSL here
-pass;
+package main;
+
+my $hoge = Hoge->new;
+ok $hoge;
+
+ok $hoge->can('context');
+ok $hoge->can('name');
 
 done_testing;
