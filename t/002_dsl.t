@@ -7,7 +7,7 @@ package Hoge;
 use DBIx::Schema::DSL;
 
 #database 'MySQL';
-create_database 'test';
+#create_database 'test';
 
 create_table user => sub {
     integer 'id',   pk => 1, auto_increment => 1;
@@ -47,7 +47,7 @@ my $c = Hoge->context;
 
 isa_ok $c, 'DBIx::Schema::DSL';
 isa_ok $c, 'Hoge';
-is $c->name, 'test';
+#is $c->name, 'test';
 is $c->db, 'MySQL';
 
 isa_ok $c->translator, 'SQL::Translator';

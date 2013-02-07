@@ -36,9 +36,6 @@ has schema => (
     lazy => 1,
     default => sub {
         my $self = shift;
-        if (!$self->name || !$self->db) {
-            die 'You should call `create_database` function beforehand.';
-        }
         $self->translator->schema->name($self->name);
         $self->translator->schema->database($self->db);
         $self->translator->schema;
@@ -113,6 +110,7 @@ sub create_table($$) {
     my ($table_name, $code) = @_;
 
     my $kls = caller;
+    $kls->set_context($kls->new) unless $kls->context;
     my $c = $kls->context;
 
     $c->_creating_table({
