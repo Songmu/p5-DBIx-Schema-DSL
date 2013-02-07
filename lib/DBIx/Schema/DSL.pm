@@ -19,7 +19,27 @@ This document describes DBIx::Schema::DSL version 0.01.
 
 =head1 SYNOPSIS
 
-    use DBIx::Schema::DSL;
+    use parent 'DBIx::Schema::DSL';
+
+    create_table user => sub {
+        column  'id', 'integer';
+        integer 'age', default => 0;
+        string  'name', default => '', limit => 255, null => 0;
+        text    'detail', default => 'ok';
+        datetime 'created_at';
+        date     'last_login_date';
+
+        add_index        hoge => [qw/hoge fuga/];
+        add_index        hoge => [qw/hoge fuga/];
+        add_unique_index fuga => [qw/id updated_at/];
+
+        set_primary_key 'id', 'created_at';
+
+        add_options({
+            ENGINE          => 'InnoDB',
+            'CHARACTER SET' => 'utf8',
+        });
+    };
 
 =head1 DESCRIPTION
 
