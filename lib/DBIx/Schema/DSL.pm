@@ -15,11 +15,12 @@ use SQL::Translator::Schema::Field;
 }
 
 # don't override CORE::int
-my @column_methods = grep {!CORE->can($_)} keys(%SQL::Translator::Schema::Field::type_mapping), qw/tinyint string/;
+my @column_methods =
+    grep {!CORE->can($_) && !main->can($_)} keys(%SQL::Translator::Schema::Field::type_mapping), qw/tinyint string/;
 my @column_sugars  = qw/pk unique auto_increment unsigned null/;
 my @export_methods = qw/
     create_database database    create_table    column      primary_key set_primary_key add_index add_unique_index
-    foreign_key     has_many    has_one         belongs_to  context
+    foreign_key     has_many    has_one         belongs_to  context     add_table_options
 /;
 sub import {
     my $caller = caller;
@@ -60,9 +61,10 @@ sub create_table($$) {
 
     $code->();
 
-    my $data = $c->_creating_table;
+    my $data = $c->_creating_table;use YAML; warn Dump $c->table_extra;
     my $table = $c->schema->add_table(
         name   => $table_name,
+        extra  => {%{$c->table_extra}},
     );
     for my $column (@{ $data->{columns} }) {
         $table->add_field(%{ $column } );
@@ -247,6 +249,16 @@ sub belongs_to {
     goto \&foreign_key;
 }
 
+sub add_table_options {
+    my $c = caller->context;
+    my %opt = @_;
+
+    $c->table_extra(
+        %{$c->table_extra},
+        %opt,
+    );
+}
+
 1;
 __END__
 
@@ -262,6 +274,11 @@ This document describes DBIx::Schema::DSL version 0.01.
 
     use parent 'DBIx::Schema::DSL';
 
+    add_table_options
+        mysql_table_type => 'InnoDB',
+        mysql_charset    => 'utf8';
+
+
     create_table user => sub {
         column  'id', 'integer';
         integer 'age', default => 0;
@@ -275,11 +292,6 @@ This document describes DBIx::Schema::DSL version 0.01.
         add_unique_index fuga => [qw/id updated_at/];
 
         set_primary_key 'id', 'created_at';
-
-        add_options({
-            ENGINE          => 'InnoDB',
-            'CHARACTER SET' => 'utf8',
-        });
     };
 
 =head1 DESCRIPTION

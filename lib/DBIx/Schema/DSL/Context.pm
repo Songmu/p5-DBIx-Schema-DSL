@@ -48,6 +48,16 @@ has translate => (
     },
 );
 
+has table_extra => (
+    is => 'lazy',
+    default => sub {
+        shift->db eq 'MySQL' ? {
+            mysql_table_type => 'InnoDB',
+            mysql_charset    => 'utf8',
+        } : {};
+    },
+);
+
 no Moo;
 
 sub _creating_table_name {
