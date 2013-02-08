@@ -50,6 +50,7 @@ has translate => (
 
 has table_extra => (
     is => 'lazy',
+    writer => 'set_table_extra',
     default => sub {
         shift->db eq 'MySQL' ? {
             mysql_table_type => 'InnoDB',

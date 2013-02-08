@@ -6,6 +6,12 @@ use Test::More;
 package Hoge;
 use DBIx::Schema::DSL;
 
+database 'MySQL';
+create_database 'test';
+
+add_table_options
+    mysql_charset => 'utf8mb4';
+
 create_table user => sub {
     integer 'id',   pk => 1, auto_increment => 1;
     integer 'member_id', unique;
@@ -44,12 +50,8 @@ create_table user_purchase => sub {
 
 package main;
 
-my $c = Hoge->context;
-is $c->db, 'MySQL';
-
-isa_ok $c->translator, 'SQL::Translator';
-isa_ok $c->schema,     'SQL::Translator::Schema';
-
-ok $c->translate and note $c->translate;
+my $output = Hoge->output;
+ok $output and note $output;
+ok(Hoge->translate_to('HTML'));
 
 done_testing;

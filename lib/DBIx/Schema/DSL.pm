@@ -20,13 +20,14 @@ my @column_methods =
 my @column_sugars  = qw/pk unique auto_increment unsigned null/;
 my @export_methods = qw/
     create_database database    create_table    column      primary_key set_primary_key add_index add_unique_index
-    foreign_key     has_many    has_one         belongs_to  context     add_table_options
+    foreign_key     has_many    has_one         belongs_to  add_table_options
 /;
+my @class_methods = qw/context output translate_to/;
 sub import {
     my $caller = caller;
 
     no strict 'refs';
-    for my $func (@export_methods, @column_methods, @column_sugars) {
+    for my $func (@export_methods, @column_methods, @column_sugars, @class_methods) {
         *{"$caller\::$func"} = \&$func;
     }
 }
@@ -61,7 +62,7 @@ sub create_table($$) {
 
     $code->();
 
-    my $data = $c->_creating_table;use YAML; warn Dump $c->table_extra;
+    my $data = $c->_creating_table;
     my $table = $c->schema->add_table(
         name   => $table_name,
         extra  => {%{$c->table_extra}},
@@ -253,10 +254,20 @@ sub add_table_options {
     my $c = caller->context;
     my %opt = @_;
 
-    $c->table_extra(
+    $c->set_table_extra({
         %{$c->table_extra},
         %opt,
-    );
+    });
+}
+
+sub output {
+    shift->context->translate;
+}
+
+sub translate_to {
+    my ($kls, $db_type) = @_;
+
+    $kls->context->translator->translate(to => $db_type);
 }
 
 1;
@@ -272,7 +283,7 @@ This document describes DBIx::Schema::DSL version 0.01.
 
 =head1 SYNOPSIS
 
-    use parent 'DBIx::Schema::DSL';
+    use DBIx::Schema::DSL;
 
     add_table_options
         mysql_table_type => 'InnoDB',
