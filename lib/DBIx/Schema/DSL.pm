@@ -275,7 +275,7 @@ __END__
 
 =head1 NAME
 
-DBIx::Schema::DSL - Perl extention to do something
+DBIx::Schema::DSL - Perl extention to declear database schema like ActiveRecord::Schema
 
 =head1 VERSION
 
@@ -283,31 +283,47 @@ This document describes DBIx::Schema::DSL version 0.01.
 
 =head1 SYNOPSIS
 
+declaration
+
+    package My::Schema;
     use DBIx::Schema::DSL;
+
+    database 'MySQL';
+    create_database 'my_database';
 
     add_table_options
         mysql_table_type => 'InnoDB',
         mysql_charset    => 'utf8';
 
+    create_table book => sub {
+        integer 'id',   pk, auto_increment;
+        varchar 'name', null => 0;
+        integer 'author_id';
+        decimal 'price', size => [4,2];
 
-    create_table user => sub {
-        column  'id', 'integer';
-        integer 'age', default => 0;
-        varchar 'name', default => '', size => 255, null => 0;
-        text    'detail', default => 'ok';
-        datetime 'created_at';
-        date     'last_login_date';
-
-        add_index        hoge => [qw/hoge fuga/];
-        add_index        hoge => [qw/hoge fuga/];
-        add_unique_index fuga => [qw/id updated_at/];
-
-        set_primary_key 'id', 'created_at';
+        belongs_to 'author';
     };
+
+    create_table author => sub {
+        primary_key 'id';
+        varchar 'name';
+        decimal 'height', precision => 4, scale => 1;
+
+        has_many 'book';
+    };
+
+    1;
+
+using
+
+    use My::Schema;
+    print My::Schema->output; # output DDL
 
 =head1 DESCRIPTION
 
 # TODO
+
+B<THE SOFTWARE IS IT'S IN ALPHA QUALITY. IT MAY CHANGE THE API WITHOUT NOTICE.>
 
 =head1 INTERFACE
 

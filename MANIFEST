@@ -1,0 +1,22 @@
+.dimconfig
+.shipit
+Build.PL
+Changes
+lib/DBIx/Schema/DSL.pm
+lib/DBIx/Schema/DSL/Context.pm
+LICENSE
+Makefile.PL
+MANIFEST			This list of files
+MANIFEST.SKIP
+META.json
+META.yml
+README
+t/000_load.t
+t/001_basic.t
+t/002_dsl.t
+t/003_dsl2.t
+xt/perlcritic.t
+xt/pod.t
+xt/podcoverage.t
+xt/podspell.t
+xt/podsynopsis.t

@@ -6,6 +6,8 @@ WriteMakefile
   'NAME' => 'DBIx::Schema::DSL',
   'VERSION_FROM' => 'lib/DBIx/Schema/DSL.pm',
   'PREREQ_PM' => {
+                   'Moo' => 0,
+                   'SQL::Translator' => 0,
                    'Test::More' => '0.98',
                    'Test::Requires' => '0.06'
                  },
