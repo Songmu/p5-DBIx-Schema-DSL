@@ -49,8 +49,6 @@ package main;
 
 my $c = Hoge->context;
 
-isa_ok $c, 'DBIx::Schema::DSL';
-isa_ok $c, 'Hoge';
 #is $c->name, 'test';
 is $c->db, 'MySQL';
 
