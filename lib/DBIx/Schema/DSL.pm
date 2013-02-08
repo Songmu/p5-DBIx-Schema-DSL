@@ -5,7 +5,9 @@ use warnings;
 
 our $VERSION = '0.01';
 
+use DBIx::Schema::DSL::Context;
 use SQL::Translator::Schema::Constants;
+use SQL::Translator::Schema::Field;
 
 {
     our $CONTEXT;
@@ -16,8 +18,8 @@ use SQL::Translator::Schema::Constants;
 my @column_methods = grep {!CORE->can($_)} keys(%SQL::Translator::Schema::Field::type_mapping), qw/tinyint string/;
 my @column_sugars  = qw/pk unique auto_increment unsigned null/;
 my @export_methods = qw/
-    create_database     database    create_table    column  primary_key set_primary_key add_index add_unique_index
-    foreign_key has_many has_one belongs_to context
+    create_database database    create_table    column      primary_key set_primary_key add_index add_unique_index
+    foreign_key     has_many    has_one         belongs_to  context
 /;
 sub import {
     my $caller = caller;
@@ -191,7 +193,7 @@ sub add_unique_index {
     push @{$creating_data->{indices}}, {
         name   => $idx_name,
         fields => $fields,
-        type   => 'UNIQUE',
+        type   => UNIQUE,
     };
 }
 
@@ -243,61 +245,6 @@ sub belongs_to {
 
     @_ = ($columns, $table, $foreign_columns);
     goto \&foreign_key;
-}
-
-package DBIx::Schema::DSL::Context;
-
-use Moo;
-use SQL::Translator;
-use SQL::Translator::Schema::Field;
-
-has name => (
-    is  => 'rw',
-);
-
-has db => (
-    is  => 'rw',
-    default => sub {'MySQL'},
-);
-
-has translator => (
-    is  => 'lazy',
-    default => sub {
-        SQL::Translator->new;
-    },
-);
-
-has schema => (
-    is => 'lazy',
-    default => sub {
-        my $self = shift;
-        $self->translator->schema->name($self->name);
-        $self->translator->schema->database($self->db);
-        $self->translator->schema;
-    },
-);
-
-has _creating_table => (
-    is => 'rw',
-    clearer => '_clear_creating_table',
-);
-
-has translate => (
-    is => 'lazy',
-    default => sub {
-        my $self = shift;
-        my $output = $self->translator->translate(to => $self->db);
-        # ignore initial comments.
-        1 while $output =~ s/\A--.*?\r?\n//ms;
-        $output;
-    },
-);
-
-no Moo;
-
-sub _creating_table_name {
-    shift->_creating_table->{table_name}
-        or die 'Not in create_table block.';
 }
 
 1;
