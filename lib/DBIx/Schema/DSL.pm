@@ -5,35 +5,28 @@ use warnings;
 
 our $VERSION = '0.01';
 
-use Mouse;
+use Moo;
 use SQL::Translator;
 use SQL::Translator::Schema::Field;
 
 has name => (
     is  => 'rw',
-    isa => 'Str',
 );
 
 has db => (
     is  => 'rw',
-    isa => 'Str',
-    lazy => 1,
-    default => 'MySQL',
+    default => sub {'MySQL'},
 );
 
 has translator => (
-    is  => 'ro',
-    isa => 'SQL::Translator',
-    lazy => 1,
+    is  => 'lazy',
     default => sub {
         SQL::Translator->new;
     },
 );
 
 has schema => (
-    is => 'ro',
-    isa => 'SQL::Translator::Schema',
-    lazy => 1,
+    is => 'lazy',
     default => sub {
         my $self = shift;
         $self->translator->schema->name($self->name);
@@ -44,24 +37,21 @@ has schema => (
 
 has _creating_table => (
     is => 'rw',
-    isa => 'HashRef',
     clearer => '_clear_creating_table',
 );
 
 has translate => (
-    is => 'ro',
-    isa => 'Str',
-    lazy => 1,
+    is => 'lazy',
     default => sub {
         my $self = shift;
         my $output = $self->translator->translate(to => $self->db);
-        # ignore initial commants.
+        # ignore initial comments.
         1 while $output =~ s/\A--.*?\r?\n//ms;
         $output;
     },
 );
 
-no Mouse;
+no Moo;
 
 {
     our $CONTEXT;
@@ -87,8 +77,6 @@ sub import {
         *{"$caller\::ISA"} = \@isa;
     }
 }
-
-sub new {bless {}, shift}
 
 sub create_database($) {
     my $database_name = shift;
@@ -126,7 +114,6 @@ sub create_table($$) {
     my $data = $c->_creating_table;
     my $table = $c->schema->add_table(
         name   => $table_name,
-        schema => $c,
     );
     for my $column (@{ $data->{columns} }) {
         $table->add_field(%{ $column } );
