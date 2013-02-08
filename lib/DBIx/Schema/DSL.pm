@@ -198,7 +198,8 @@ for my $method (@column_methods) {
         use strict 'refs';
         my $column_name = shift;
 
-        column($column_name, $method, @_);
+        @_ = ($column_name, $method, @_);
+        goto \&column;
     };
 }
 
@@ -275,7 +276,8 @@ sub has_many {
     my $columns         = $opt{column}         || 'id';
     my $foreign_columns = $opt{foregin_column} || $c->_creating_table_name .'_id';
 
-    foreign_key($columns, $table, $foreign_columns);
+    @_ = ($columns, $table, $foreign_columns);
+    goto \&foreign_key;
 }
 
 sub has_one {
@@ -286,7 +288,8 @@ sub has_one {
     my $columns         = $opt{column}         || 'id';
     my $foreign_columns = $opt{foregin_column} || $c->_creating_table_name .'_id';
 
-    foreign_key($columns, $table, $foreign_columns);
+    @_ = ($columns, $table, $foreign_columns);
+    goto \&foreign_key;
 }
 
 sub belongs_to {
@@ -295,7 +298,8 @@ sub belongs_to {
     my $columns         = $opt{column}         || "${table}_id";
     my $foreign_columns = $opt{foregin_column} || 'id';
 
-    foreign_key($columns, $table, $foreign_columns);
+    @_ = ($columns, $table, $foreign_columns);
+    goto \&foreign_key;
 }
 
 sub _creating_table_name {
