@@ -7,6 +7,7 @@ our $VERSION = '0.01';
 
 use Moo;
 use SQL::Translator;
+use SQL::Translator::Schema::Constants;
 use SQL::Translator::Schema::Field;
 
 has name => (
@@ -62,7 +63,10 @@ no Moo;
 # don't override CORE::int
 my @column_methods = grep {!CORE->can($_)} keys(%SQL::Translator::Schema::Field::type_mapping), qw/tinyint string/;
 my @column_sugars  = qw/pk unique auto_increment unsigned null/;
-my @export_methods = qw/create_database database create_table column primary_key set_primary_key add_index add_unique_index/;
+my @export_methods = qw/
+    create_database     database    create_table    column  primary_key set_primary_key add_index add_unique_index
+    foreign_key has_many has_one belongs_to
+/;
 sub import {
     my $caller = caller;
 
@@ -133,8 +137,7 @@ sub column($$;%) {
     my ($column_name, $data_type, %opt) = @_;
     $data_type = 'varchar' if $data_type eq 'string';
 
-    my $kls = caller;
-    my $c = $kls->context;
+    my $c = caller->context;
 
     my $creating_data = $c->_creating_table
         or die q{can't call `column` method outside `create_table` method};
@@ -177,7 +180,7 @@ sub column($$;%) {
         push @{$creating_data->{constraints}}, {
             name   => "${column_name}_uniq",
             fields => [$column_name],
-            type   => 'UNIQUE',
+            type   => UNIQUE,
         };
     }
 
@@ -210,8 +213,7 @@ for my $method (@column_sugars) {
 sub set_primary_key(@) {
     my @keys = @_;
 
-    my $kls = caller;
-    my $c = $kls->context;
+    my $c = caller->context;
 
     my $creating_data = $c->_creating_table
         or die q{can't call `set_primary_key` method outside `create_table` method};
@@ -220,8 +222,7 @@ sub set_primary_key(@) {
 }
 
 sub add_index {
-    my $kls = caller;
-    my $c = $kls->context;
+    my $c = caller->context;
 
     my $creating_data = $c->_creating_table
         or die q{can't call `add_index` method outside `create_table` method};
@@ -236,8 +237,7 @@ sub add_index {
 }
 
 sub add_unique_index {
-    my $kls = caller;
-    my $c = $kls->context;
+    my $c = caller->context;
 
     my $creating_data = $c->_creating_table
         or die q{can't call `add_unique_index` method outside `create_table` method};
@@ -249,6 +249,58 @@ sub add_unique_index {
         fields => $fields,
         type   => 'UNIQUE',
     };
+}
+
+sub foreign_key {
+    my $c = caller->context;
+
+    my $creating_data = $c->_creating_table
+        or die q{can't call `foreign` method outside `create_table` method};
+
+    my ($columns, $table, $foreign_columns) = @_;
+
+    push @{$creating_data->{constraints}}, {
+        type => FOREIGN_KEY,
+        fields           => $columns,
+        reference_table  => $table,
+        reference_fields => $foreign_columns,
+    };
+}
+
+sub has_many {
+    my $c = caller->context;
+
+    my ($table, %opt) = @_;
+
+    my $columns         = $opt{column}         || 'id';
+    my $foreign_columns = $opt{foregin_column} || $c->_creating_table_name .'_id';
+
+    foreign_key($columns, $table, $foreign_columns);
+}
+
+sub has_one {
+    my $c = caller->context;
+
+    my ($table, %opt) = @_;
+
+    my $columns         = $opt{column}         || 'id';
+    my $foreign_columns = $opt{foregin_column} || $c->_creating_table_name .'_id';
+
+    foreign_key($columns, $table, $foreign_columns);
+}
+
+sub belongs_to {
+    my ($table, %opt) = @_;
+
+    my $columns         = $opt{column}         || "${table}_id";
+    my $foreign_columns = $opt{foregin_column} || 'id';
+
+    foreign_key($columns, $table, $foreign_columns);
+}
+
+sub _creating_table_name {
+    shift->_creating_table->{table_name}
+        or die 'Not in create_table block.';
 }
 
 1;

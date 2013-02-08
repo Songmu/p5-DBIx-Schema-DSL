@@ -24,12 +24,16 @@ create_table book => sub {
     varchar 'name', null => 0;
     integer 'author_id';
     decimal 'price', size => [4,2];
+
+    belongs_to 'author';
 };
 
 create_table author => sub {
     primary_key 'id';
     varchar 'name';
     decimal 'height', precision => 4, scale => 1;
+
+    has_many 'book';
 };
 
 create_table user_purchase => sub {
