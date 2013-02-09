@@ -5,7 +5,7 @@ use Module::Build;
 my $build = Module::Build->new(
     license        => 'perl',
     dynamic_config => 0,
-    dist_abstract  => 'XXX',
+    dist_abstract  => 'DSL for database schema declaration',
 
     build_requires     => {
         'Test::More'     => '0.98',

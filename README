@@ -1,6 +1,5 @@
 NAME
-    DBIx::Schema::DSL - Perl extention to declear database schema like
-    ActiveRecord::Schema
+    DBIx::Schema::DSL - DSL for Database schema declaration
 
 VERSION
     This document describes DBIx::Schema::DSL version 0.01.
@@ -11,26 +10,27 @@ SYNOPSIS
         package My::Schema;
         use DBIx::Schema::DSL;
 
-        database 'MySQL';
-        create_database 'my_database';
+        database 'MySQL';              # optional default mysql
+        create_database 'my_database'; # optional
 
+        # Optional. Default values is same as follows if database is MySQL.
         add_table_options
             mysql_table_type => 'InnoDB',
             mysql_charset    => 'utf8';
 
-        create_table book => sub {
-            integer 'id',   pk, auto_increment;
-            varchar 'name', null => 0;
+        create_table 'book' => columns {
+            integer 'id',   primary_key, auto_increment;
+            varchar 'name', null;
             integer 'author_id';
-            decimal 'price', size => [4,2];
+            decimal 'price', 'size' => [4,2];
 
             belongs_to 'author';
         };
 
-        create_table author => sub {
+        create_table 'author' => columns {
             primary_key 'id';
             varchar 'name';
-            decimal 'height', precision => 4, scale => 1;
+            decimal 'height', 'precision' => 4, 'scale' => 1;
 
             has_many 'book';
         };
@@ -43,14 +43,15 @@ SYNOPSIS
         print My::Schema->output; # output DDL
 
 DESCRIPTION
-    # TODO
+    This module provides DSL for database schema declaration like ruby's
+    ActiveRecord::Schema.
 
     THE SOFTWARE IS IT'S IN ALPHA QUALITY. IT MAY CHANGE THE API WITHOUT
     NOTICE.
 
 INTERFACE
   Functions
-   "hello()"
+   "context()"
     # TODO
 
 DEPENDENCIES

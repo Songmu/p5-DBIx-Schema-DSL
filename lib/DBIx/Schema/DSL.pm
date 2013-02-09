@@ -292,7 +292,7 @@ __END__
 
 =head1 NAME
 
-DBIx::Schema::DSL - Perl extention to declear database schema like ActiveRecord::Schema
+DBIx::Schema::DSL - DSL for Database schema declaration
 
 =head1 VERSION
 
@@ -305,9 +305,10 @@ declaration
     package My::Schema;
     use DBIx::Schema::DSL;
 
-    database 'MySQL';
-    create_database 'my_database';
+    database 'MySQL';              # optional default mysql
+    create_database 'my_database'; # optional
 
+    # Optional. Default values is same as follows if database is MySQL.
     add_table_options
         mysql_table_type => 'InnoDB',
         mysql_charset    => 'utf8';
@@ -338,7 +339,7 @@ using
 
 =head1 DESCRIPTION
 
-# TODO
+This module provides DSL for database schema declaration like ruby's ActiveRecord::Schema.
 
 B<THE SOFTWARE IS IT'S IN ALPHA QUALITY. IT MAY CHANGE THE API WITHOUT NOTICE.>
 
@@ -346,7 +347,7 @@ B<THE SOFTWARE IS IT'S IN ALPHA QUALITY. IT MAY CHANGE THE API WITHOUT NOTICE.>
 
 =head2 Functions
 
-=head3 C<< hello() >>
+=head3 C<< context() >>
 
 # TODO
 
