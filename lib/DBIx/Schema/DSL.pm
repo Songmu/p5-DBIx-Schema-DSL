@@ -33,19 +33,8 @@ sub import {
     }
 }
 
-sub create_database($) {
-    my $database_name = shift;
-
-    my $kls = caller;
-    $kls->context->name($database_name);
-}
-
-sub database($) {
-    my $database = shift;
-
-    my $kls = caller;
-    $kls->context->db($database);
-}
+sub create_database($) { caller->context->name(shift) }
+sub database($)        { caller->context->db(shift)   }
 
 sub add_table_options {
     my $c = caller->context;
