@@ -59,6 +59,10 @@ has table_extra => (
     },
 );
 
+has default_unsigned => (
+    is => 'rw',
+);
+
 no Moo;
 
 sub _creating_table_name {

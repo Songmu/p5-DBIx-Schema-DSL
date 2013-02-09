@@ -12,7 +12,9 @@ create_database 'test';
 add_table_options
     mysql_charset => 'utf8mb4';
 
-create_table user => sub {
+default_unsigned;
+
+create_table user => columns {
     integer 'id',   pk => 1, auto_increment => 1;
     integer 'member_id', unique;
     column  'gender', 'tinyint', null => 1;
@@ -22,7 +24,7 @@ create_table user => sub {
     text    'profile';
 };
 
-create_table book => sub {
+create_table book => columns {
     integer 'id',   pk, auto_increment;
     varchar 'name', null => 0;
     integer 'author_id';
@@ -31,7 +33,7 @@ create_table book => sub {
     belongs_to 'author';
 };
 
-create_table author => sub {
+create_table author => columns {
     primary_key 'id';
     varchar 'name';
     decimal 'height', precision => 4, scale => 1;
@@ -39,7 +41,7 @@ create_table author => sub {
     has_many 'book';
 };
 
-create_table user_purchase => sub {
+create_table user_purchase => columns {
     integer  'id', auto_increment;
     integer  'user_id';
     datetime 'purchased_at';

@@ -16,18 +16,19 @@ use SQL::Translator::Schema::Field;
 
 # don't override CORE::int
 my @column_methods =
-    grep {!CORE->can($_) && !main->can($_)} keys(%SQL::Translator::Schema::Field::type_mapping), qw/tinyint string/;
+    grep {!CORE->can($_) && !main->can($_)} keys(%SQL::Translator::Schema::Field::type_mapping), qw/tinyint string number/;
 my @column_sugars  = qw/pk unique auto_increment unsigned null/;
-my @export_methods = qw/
-    create_database database    create_table    column      primary_key set_primary_key add_index add_unique_index
-    foreign_key     has_many    has_one         belongs_to  add_table_options
+my @rev_column_sugars = qw/not_null signed/;
+my @export_dsls = qw/
+    create_database database    create_table    column      primary_key set_primary_key add_index   add_unique_index
+    foreign_key     has_many    has_one         belongs_to  add_table_options   default_unsigned    columns
 /;
-my @class_methods = qw/context output translate_to/;
+my @class_methods = qw/context output translate_to translator/;
 sub import {
     my $caller = caller;
 
     no strict 'refs';
-    for my $func (@export_methods, @column_methods, @column_sugars, @class_methods) {
+    for my $func (@export_dsls, @column_methods, @column_sugars, @class_methods, @rev_column_sugars) {
         *{"$caller\::$func"} = \&$func;
     }
 }
@@ -44,6 +45,20 @@ sub database($) {
 
     my $kls = caller;
     $kls->context->db($database);
+}
+
+sub add_table_options {
+    my $c = caller->context;
+    my %opt = @_;
+
+    $c->set_table_extra({
+        %{$c->table_extra},
+        %opt,
+    });
+}
+
+sub default_unsigned() {
+    caller->context->default_unsigned(1);
 }
 
 sub create_table($$) {
@@ -80,6 +95,7 @@ sub create_table($$) {
 
     $c->_clear_creating_table;
 }
+sub columns(&) {shift}
 
 sub column($$;%) {
     my ($column_name, $data_type, %opt) = @_;
@@ -116,11 +132,16 @@ sub column($$;%) {
         $extra->{unsigned} = delete $args{unsigned};
         $args{extra} = $extra;
     }
+    elsif ($c->default_unsigned && $data_type =~ /int(?:eger)$/) {
+        $args{extra}{unsigned} = 1;
+    }
+
     if ($args{precision}) {
         my $precision = delete $args{precision};
         my $scale     = delete $args{scale} || 0;
         $args{size} = [$precision, $scale];
     }
+
     if ($args{is_primary_key}) {
         $creating_data->{primary_key} = $column_name;
     }
@@ -153,11 +174,13 @@ for my $method (@column_methods) {
 
 for my $method (@column_sugars) {
     no strict 'refs';
-    *{__PACKAGE__."::$method"} = sub {
+    *{__PACKAGE__."::$method"} = sub() {
         use strict 'refs';
         ($method => 1);
     };
 }
+sub not_null() { (null => 0)     }
+sub signed()   { (unsigned => 0) }
 
 sub set_primary_key(@) {
     my @keys = @_;
@@ -250,24 +273,18 @@ sub belongs_to {
     goto \&foreign_key;
 }
 
-sub add_table_options {
-    my $c = caller->context;
-    my %opt = @_;
-
-    $c->set_table_extra({
-        %{$c->table_extra},
-        %opt,
-    });
-}
-
 sub output {
     shift->context->translate;
+}
+
+sub translator {
+    shift->context->translator;
 }
 
 sub translate_to {
     my ($kls, $db_type) = @_;
 
-    $kls->context->translator->translate(to => $db_type);
+    $kls->translator->translate(to => $db_type);
 }
 
 1;
@@ -295,19 +312,19 @@ declaration
         mysql_table_type => 'InnoDB',
         mysql_charset    => 'utf8';
 
-    create_table book => sub {
+    create_table 'book' => columns {
         integer 'id',   pk, auto_increment;
-        varchar 'name', null => 0;
+        varchar 'name', null;
         integer 'author_id';
-        decimal 'price', size => [4,2];
+        decimal 'price', 'size' => [4,2];
 
         belongs_to 'author';
     };
 
-    create_table author => sub {
+    create_table 'author' => columns {
         primary_key 'id';
         varchar 'name';
-        decimal 'height', precision => 4, scale => 1;
+        decimal 'height', 'precision' => 4, 'scale' => 1;
 
         has_many 'book';
     };
