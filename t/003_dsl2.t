@@ -15,7 +15,7 @@ add_table_options
 default_unsigned;
 
 create_table user => columns {
-    integer 'id',   pk => 1, auto_increment => 1;
+    integer 'id',   primary_key, auto_increment;
     integer 'member_id', unique;
     column  'gender', 'tinyint', null => 1;
     integer 'age', limit => 1, unsigned => 0, null;
@@ -25,7 +25,7 @@ create_table user => columns {
 };
 
 create_table book => columns {
-    integer 'id',   pk, auto_increment;
+    integer 'id',   primary_key, auto_increment;
     varchar 'name', null => 0;
     integer 'author_id';
     decimal 'price', size => [4,2];

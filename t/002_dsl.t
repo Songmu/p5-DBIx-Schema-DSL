@@ -7,7 +7,7 @@ package Hoge;
 use DBIx::Schema::DSL;
 
 create_table user => columns {
-    integer 'id',   pk => 1, auto_increment => 1;
+    integer 'id',   primary_key => 1, auto_increment => 1;
     integer 'member_id', unique;
     column  'gender', 'tinyint', null => 1;
     integer 'age', limit => 1, unsigned => 0, null;
@@ -26,7 +26,7 @@ create_table book => columns {
 };
 
 create_table author => columns {
-    primary_key 'id';
+    pk      'id';
     varchar 'name';
     decimal 'height', precision => 4, scale => 1;
 

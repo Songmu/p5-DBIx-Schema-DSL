@@ -17,11 +17,11 @@ use SQL::Translator::Schema::Field;
 # don't override CORE::int
 my @column_methods =
     grep {!CORE->can($_) && !main->can($_)} keys(%SQL::Translator::Schema::Field::type_mapping), qw/tinyint string number/;
-my @column_sugars  = qw/pk unique auto_increment unsigned null/;
+my @column_sugars  = qw/unique auto_increment unsigned null/;
 my @rev_column_sugars = qw/not_null signed/;
 my @export_dsls = qw/
     create_database database    create_table    column      primary_key set_primary_key add_index   add_unique_index
-    foreign_key     has_many    has_one         belongs_to  add_table_options   default_unsigned    columns
+    foreign_key     has_many    has_one         belongs_to  add_table_options   default_unsigned    columns pk  fk
 /;
 my @class_methods = qw/context output translate_to translator/;
 sub import {
@@ -117,7 +117,7 @@ sub column($$;%) {
         limit          => 'size',
         default        => 'default_value',
         unique         => 'is_unique',
-        pk             => 'is_primary_key',
+        primary_key    => 'is_primary_key',
         auto_increment => 'is_auto_increment',
     );
     for my $key (keys %map) {
@@ -157,9 +157,17 @@ sub column($$;%) {
 }
 
 sub primary_key {
-    my $column_name = shift;
-    column($column_name, 'integer', pk(), auto_increment(), @_);
+    if (defined wantarray) {
+        (primary_key => 1);
+    }
+    else { # void context
+        my $column_name = shift;
+
+        @_ = ($column_name, 'integer', primary_key(), auto_increment(), @_);
+        goto \&column;
+    }
 }
+*pk = \&primary_key;
 
 for my $method (@column_methods) {
     no strict 'refs';
@@ -238,6 +246,7 @@ sub foreign_key {
         reference_fields => $foreign_columns,
     };
 }
+*fk = \&foreign_key;
 
 sub has_many {
     my $c = caller->context;
@@ -313,7 +322,7 @@ declaration
         mysql_charset    => 'utf8';
 
     create_table 'book' => columns {
-        integer 'id',   pk, auto_increment;
+        integer 'id',   primary_key, auto_increment;
         varchar 'name', null;
         integer 'author_id';
         decimal 'price', 'size' => [4,2];
