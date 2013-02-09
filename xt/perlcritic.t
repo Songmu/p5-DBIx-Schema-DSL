@@ -8,7 +8,7 @@ plan skip_all => "Test::Perl::Critic is not available." if $@;
 all_critic_ok('lib');
 __DATA__
 
-exclude=ProhibitStringyEval ProhibitExplicitReturnUndef RequireBarewordIncludes
+exclude=ProhibitStringyEval ProhibitExplicitReturnUndef RequireBarewordIncludes ProhibitSubroutinePrototypes
 
 [TestingAndDebugging::ProhibitNoStrict]
 allow=refs
