@@ -44,6 +44,7 @@ create_table user_purchase => columns {
 
 package main;
 
+ok $Hoge::CONTEXT;
 my $c = Hoge->context;
 is $c->db, 'MySQL';
 

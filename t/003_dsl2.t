@@ -50,10 +50,25 @@ create_table user_purchase => columns {
     add_index user_id_idx => [qw/user_id/];
 };
 
+package Fuga;
+use DBIx::Schema::DSL;
+
+create_table player => columns {
+    integer 'id',   primary_key => 1, auto_increment => 1;
+    integer 'member_id', unique;
+    column  'gender', 'tinyint', null => 1;
+    integer 'age', limit => 1, unsigned => 0, null;
+    varchar 'name', null => 0;
+    varchar 'description', null => 1;
+};
+
 package main;
 
 my $output = Hoge->output;
 ok $output and note $output;
 ok(Hoge->translate_to('HTML'));
+
+like(Fuga->output, qr/player/ms);
+unlike(Fuga->output, qr/user_purchase/ms);
 
 done_testing;

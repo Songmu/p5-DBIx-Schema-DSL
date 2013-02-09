@@ -9,9 +9,11 @@ use DBIx::Schema::DSL::Context;
 use SQL::Translator::Schema::Constants;
 use SQL::Translator::Schema::Field;
 
-{
-    our $CONTEXT;
-    sub context     { $CONTEXT ||= DBIx::Schema::DSL::Context->new }
+sub context {
+    my $pkg = shift;
+    die 'something wrong when calling context method.' if $pkg eq __PACKAGE__;
+    no strict 'refs';
+    ${"$pkg\::CONTEXT"} ||= DBIx::Schema::DSL::Context->new;
 }
 
 # don't override CORE::int
