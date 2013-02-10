@@ -323,6 +323,8 @@ This document describes DBIx::Schema::DSL version 0.01.
         integer 'author_id';
         decimal 'price', 'size' => [4,2];
 
+        add_index 'author_id_idx' => ['author_id'];
+
         belongs_to 'author';
     };
 
@@ -330,6 +332,8 @@ This document describes DBIx::Schema::DSL version 0.01.
         primary_key 'id';
         varchar 'name';
         decimal 'height', 'precision' => 4, 'scale' => 1;
+
+        add_index 'height_idx' => ['height'];
 
         has_many 'book';
     };
