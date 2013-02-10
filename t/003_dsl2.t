@@ -66,6 +66,7 @@ package main;
 
 my $output = Hoge->output;
 ok $output and note $output;
+ok(Hoge->no_fk_output);
 ok(Hoge->translate_to('HTML'));
 
 like(Fuga->output, qr/player/ms);

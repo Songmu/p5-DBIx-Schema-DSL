@@ -25,7 +25,7 @@ my @export_dsls = qw/
     create_database database    create_table    column      primary_key set_primary_key add_index   add_unique_index
     foreign_key     has_many    has_one         belongs_to  add_table_options   default_unsigned    columns pk  fk
 /;
-my @class_methods = qw/context output translate_to translator/;
+my @class_methods = qw/context output no_fk_output translate_to translator/;
 sub import {
     my $caller = caller;
 
@@ -277,6 +277,10 @@ sub output {
     shift->context->translate;
 }
 
+sub no_fk_output {
+    shift->context->no_fk_translate;
+}
+
 sub translator {
     shift->context->translator;
 }
@@ -305,13 +309,13 @@ declaration
     package My::Schema;
     use DBIx::Schema::DSL;
 
-    database 'MySQL';              # optional default mysql
+    database 'MySQL';              # optional. default 'MySQL'
     create_database 'my_database'; # optional
 
     # Optional. Default values is same as follows if database is MySQL.
     add_table_options
-        mysql_table_type => 'InnoDB',
-        mysql_charset    => 'utf8';
+        'mysql_table_type' => 'InnoDB',
+        'mysql_charset'    => 'utf8';
 
     create_table 'book' => columns {
         integer 'id',   primary_key, auto_increment;

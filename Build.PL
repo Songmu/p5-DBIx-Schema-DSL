@@ -13,16 +13,15 @@ my $build = Module::Build->new(
     },
     configure_requires => { 'Module::Build' => '0.38' },
     requires           => {
-        perl         => '5.008001',
-        Moo               => 0,
-        'SQL::Translator' => 0,
+        perl              => '5.008001',
+        Moo               => '1.000003',
+        'SQL::Translator' => '0.11011',
+        Clone             => '0.06',
     },
 
     no_index    => { 'directory' => [ 'inc' ] },
     name        => 'DBIx/Schema/DSL',
     module_name => 'DBIx::Schema::DSL',
-
-    # script_files => [''],
 
     test_files           => (-d '.git' || $ENV{RELEASE_TESTING}) ? 't/ xt/' : 't/',
     recursive_test_files => 1,

@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use Moo;
+use Clone qw/clone/;
 use SQL::Translator;
 
 has name => (
@@ -61,6 +62,31 @@ has table_extra => (
 
 has default_unsigned => (
     is => 'rw',
+);
+
+has no_fk_translator => (
+    is  => 'lazy',
+    default => sub {
+        my $self = shift;
+        my $no_fk_translator = clone $self->translator;
+
+        for my $table ($no_fk_translator->schema->get_tables) {
+            $table->drop_constraint($_) for $table->fkey_constraints;
+        }
+
+        $no_fk_translator;
+    },
+);
+
+has no_fk_translate => (
+    is => 'lazy',
+    default => sub {
+        my $self = shift;
+        my $output = $self->no_fk_translator->translate(to => $self->db);
+        # ignore initial comments.
+        1 while $output =~ s/\A--.*?\r?\n//ms;
+        $output;
+    },
 );
 
 no Moo;

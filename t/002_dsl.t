@@ -44,13 +44,18 @@ create_table user_purchase => columns {
 
 package main;
 
-ok $Hoge::CONTEXT;
+{
+    no warnings 'once';
+    isa_ok $Hoge::CONTEXT, 'DBIx::Schema::DSL::Context';
+}
 my $c = Hoge->context;
 is $c->db, 'MySQL';
 
 isa_ok $c->translator, 'SQL::Translator';
 isa_ok $c->schema,     'SQL::Translator::Schema';
 
+ok $c->no_fk_translate;
 ok $c->translate and note $c->translate;
+ok $c->no_fk_translate ne $c->translate;
 
 done_testing;
