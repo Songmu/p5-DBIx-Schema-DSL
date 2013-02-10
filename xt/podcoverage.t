@@ -7,3 +7,5 @@ plan skip_all => 'Test::Pod::Coverage 1.04 required for testing POD coverage'
 pod_coverage_ok('DBIx::Schema::DSL' => {
     also_private => [qw(unimport BUILD DEMOLISH init_meta)],
 });
+
+done_testing;
