@@ -21,6 +21,20 @@ Masayuki Matsuki
 y.songmu@gmail.com
 DBIx::Schema::DSL
 
+# module terms
+DDL
+DataType
+bigint
+datetime
+indices
+multi
+smallint
+timestamp
+tinyblob
+tinyint
+varbinary
+varchar
+
 # computer terms
 API
 APIs

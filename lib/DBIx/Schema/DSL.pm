@@ -304,15 +304,14 @@ This document describes DBIx::Schema::DSL version 0.01.
 
 =head1 SYNOPSIS
 
-declaration
-
+    # declaration
     package My::Schema;
     use DBIx::Schema::DSL;
 
     database 'MySQL';              # optional. default 'MySQL'
     create_database 'my_database'; # optional
 
-    # Optional. Default values is same as follows if database is MySQL.
+    # Optional. Default values is same as follows if database is 'MySQL'.
     add_table_options
         'mysql_table_type' => 'InnoDB',
         'mysql_charset'    => 'utf8';
@@ -336,10 +335,9 @@ declaration
 
     1;
 
-using
-
-    use My::Schema;
-    print My::Schema->output; # output DDL
+    # use your schema class like this
+    # use My::Schema;
+    # print My::Schema->output; # output DDL
 
 =head1 DESCRIPTION
 
@@ -349,11 +347,196 @@ B<THE SOFTWARE IS IT'S IN ALPHA QUALITY. IT MAY CHANGE THE API WITHOUT NOTICE.>
 
 =head1 INTERFACE
 
-=head2 Functions
+=head2 Export Functions
 
-=head3 C<< context() >>
+=head3 C<< database($str :Str) >>
 
-# TODO
+Set database type like MySQL, Oracle and so on.
+(Optional default 'MySQL')
+
+=head3 C<< create_database($str :Str) >>
+
+Set database name. (Optional)
+
+=head3 C<< add_table_options(%opt :Hash) >>
+
+Set global setting of table->extra for SQL::Translator::Table
+
+=head3 C<< default_unsigned() >>
+
+Automatically set unsigned when declaring integer columns.
+If you want to declare singed columns, using `singed` sugar.
+
+=head3 C<< create_table($table_name :Str, $columns :CodeRef) >>
+
+Declare table.
+
+=head3 C<< columns { block } :CodeRef >>
+
+Declare columns settings of table in block. In fact C<< columns {...} >>
+is mostly same as C<< sub {...} >>, so just syntax sugar.
+
+=head2 Export Functions for declaring column
+
+=head3 C<< column($column_name :Str, $data_type :Str(DataType), (%option :Optional)) >>
+
+Declare column. It can be called only in create_table block.
+
+C<< $data_type >> strings (ex. C<< integer >> ) are can be used as a function.
+
+C<< integer($column_name, (%option)) >> is same as C<< column($column_name, (%option)) >>
+
+DataType functions are as follows.
+
+=over
+
+=item bigint
+=item binary
+=item bit
+=item blob
+=item char
+=item date
+=item datetime
+=item dec
+=item decimal
+=item double
+=item integer
+=item number
+=item numeric
+=item smallint
+=item string
+=item text
+=item timestamp
+=item tinyblob
+=item tinyint
+=item varbinary
+=item varchar
+
+=back
+
+=head3 C<< primary_key($column_name :Str, (%option :Optional)) >>
+
+Same as C<< column($column_name, 'integer', primary_key => 1, auto_increment => 1, (%option)) >>
+
+=head3 C<< pk($column_name :Str, (%option :Optional)) >>
+
+Alias of C<< primary_key >> .
+
+=head4 C<< %option >> arguments
+
+Specify column using C<< %option >> hash.
+
+    integer 'id', primary_key => 1, default => 0;
+
+Each keyword has mapping to argument for SQL::Translator::Field.
+
+mappings are:
+
+    null           => 'is_nullable',
+    size           => 'size',
+    limit          => 'size',
+    default        => 'default_value',
+    unique         => 'is_unique',
+    primary_key    => 'is_primary_key',
+    auto_increment => 'is_auto_increment',
+    unsigned       => {extra => {unsigned => 1}},
+    precisition    => 'size[0]',
+    scale          => 'size[1]',
+
+=head4 Syntax sugars for C<< %option >>
+
+There are syntax sugar functions for C<< %option >>.
+
+=over
+
+=item C<< primary_key() >>
+
+('primary_key' => 1)
+
+=item C<< pk() >>
+
+Alias of primary_key.
+
+=item C<< unique() >>
+
+('unique' => 1)
+
+=item C<< auto_increment() >>
+
+('auto_increment' => 1)
+
+=item C<< unsigned() >>
+
+('unsigned' => 1)
+
+=item C<< signed() >>
+
+('unsigned' => 0)
+
+=item C<< null() >>
+
+('null' => 1)
+
+=item C<< not_null() >>
+
+('null' => 0)
+
+=back
+
+=head2 Export Functions for declaring primary_key and indices
+
+=head3 C<< set_primary_key(@columns) >>
+
+Set primary key. This is useful for multi column primary key.
+Do not need to call this function when primary_key column already declared.
+
+=head3 C<< add_index($index_name :Str, $colums :ArrayRef, ($index_type :Str(default 'NORMAL')) ) >>
+
+Add index.
+
+=head3 C<< add_unique_index($index_name :Str, $colums :ArrayRef) >>
+
+Same as C<< add_index($index_name, $columns, 'UNIQUE') >>
+
+=head2 Export Functions for declaring foreign keys
+
+=head3 C<< foreign_key($columns :(Str|ArrayRef), $foreign_table :Str, $foreign_columns :(Str|ArrayRef) ) >>
+
+Add foreign key.
+
+=head3 C<< fk(@_) >>
+
+Alias of C<< foreign_key(@_) >>
+
+=head3 Foreign key sugar functions
+
+=over
+
+=item C<< has_many($foreign_table) >>
+=item C<< has_one($foreign_table) >>
+=item C<< belongs_to($foreign_table) >>
+
+=back
+
+=head2 Export Class Methods
+
+=head3 C<< output() :Str >>
+
+Output schema DDL.
+
+=head3 C<< no_fk_output() :Str >>
+
+Output schema DDL without FOREIGN KEY constraints.
+
+=head3 C<< translate_to($database_type :Str) :Any >>
+
+Output schema DDL of C<< $database_type >>.
+
+=head3 C<< translator() :SQL::Translator >>
+
+Returns SQL::Translator object.
+
+=head3 C<< context() :DBIx::Schema::DSL::Context >>
 
 =head1 DEPENDENCIES
 
