@@ -58,11 +58,11 @@
 ^MYMETA\.
 #!end included /Users/Songmu/perl5/perlbrew/perls/5.16.2/lib/5.16.2/ExtUtils/MANIFEST.SKIP
 
-
 # skip author's files
 \bauthor\b
 
 \.bs$
 \.o(?:|bj|ld|ut)$
 nytprof
-MYMETA\.yml$
+tmp/
+^MANIFEST\.
