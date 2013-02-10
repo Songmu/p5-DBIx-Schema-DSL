@@ -2,6 +2,7 @@ DBIx-Schema-DSL-*
 .*
 !.gitignore
 !.shipit
+!.travis.yml
 inc/
 *.o
 *.obj

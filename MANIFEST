@@ -1,5 +1,3 @@
-.dimconfig
-.shipit
 Build.PL
 Changes
 lib/DBIx/Schema/DSL.pm
