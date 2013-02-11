@@ -396,25 +396,45 @@ DataType functions are as follows.
 =over
 
 =item bigint
+
 =item binary
+
 =item bit
+
 =item blob
+
 =item char
+
 =item date
+
 =item datetime
+
 =item dec
+
 =item decimal
+
 =item double
+
 =item integer
+
 =item number
+
 =item numeric
+
 =item smallint
+
 =item string
+
 =item text
+
 =item timestamp
+
 =item tinyblob
+
 =item tinyint
+
 =item varbinary
+
 =item varchar
 
 =back
@@ -518,7 +538,9 @@ Alias of C<< foreign_key(@_) >>
 =over
 
 =item C<< has_many($foreign_table) >>
+
 =item C<< has_one($foreign_table) >>
+
 =item C<< belongs_to($foreign_table) >>
 
 =back
