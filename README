@@ -85,10 +85,27 @@ INTERFACE
 
     DataType functions are as follows.
 
-    bigint =item binary =item bit =item blob =item char =item date =item
-    datetime =item dec =item decimal =item double =item integer =item number
-    =item numeric =item smallint =item string =item text =item timestamp
-    =item tinyblob =item tinyint =item varbinary =item varchar
+    bigint
+    binary
+    bit
+    blob
+    char
+    date
+    datetime
+    dec
+    decimal
+    double
+    integer
+    number
+    numeric
+    smallint
+    string
+    text
+    timestamp
+    tinyblob
+    tinyint
+    varbinary
+    varchar
 
    "primary_key($column_name :Str, (%option :Optional))"
     Same as "column($column_name, 'integer', primary_key => 1,
@@ -163,7 +180,8 @@ INTERFACE
     Alias of "foreign_key(@_)"
 
    Foreign key sugar functions
-    "has_many($foreign_table)" =item "has_one($foreign_table)" =item
+    "has_many($foreign_table)"
+    "has_one($foreign_table)"
     "belongs_to($foreign_table)"
 
   Export Class Methods
