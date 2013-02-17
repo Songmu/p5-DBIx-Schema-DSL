@@ -128,6 +128,10 @@ sub column($$;%) {
         $args{extra}{unsigned} = 1;
     }
 
+    if ($args{data_type} eq 'VARCHAR' && !$args{size}) {
+        $args{size} = 255;
+    }
+
     if ($args{precision}) {
         my $precision = delete $args{precision};
         my $scale     = delete $args{scale} || 0;
