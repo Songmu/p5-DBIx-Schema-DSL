@@ -12,6 +12,7 @@ t/000_load.t
 t/001_basic.t
 t/002_dsl.t
 t/003_dsl2.t
+t/004_detect_undefined_column.t
 xt/perlcritic.t
 xt/pod.t
 xt/podcoverage.t

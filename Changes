@@ -1,7 +1,10 @@
 Revision history for Perl extension DBIx::Schema::DSL
 
-0.02    Sun Feb 17 13:10:00 2012
+0.03    Wed Feb 20 11:47:00 2013
+    - detect undefind colums specified in index and constraint
+
+0.02    Sun Feb 17 13:10:00 2013
     - set default size of VARCHAR as 255
 
-0.01    Mon Feb 11 15:05:00 2012
+0.01    Mon Feb 11 15:05:00 2013
     - original version
