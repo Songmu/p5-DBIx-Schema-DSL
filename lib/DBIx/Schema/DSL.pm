@@ -5,6 +5,8 @@ use warnings;
 
 our $VERSION = '0.02';
 
+use Carp qw/croak/;
+use Array::Diff;
 use DBIx::Schema::DSL::Context;
 use SQL::Translator::Schema::Constants;
 use SQL::Translator::Schema::Field;
@@ -77,17 +79,41 @@ sub create_table($$) {
     for my $column (@{ $data->{columns} }) {
         $table->add_field(%{ $column } );
     }
+
+    my @columns = map {$_->{name}} @{$data->{columns}};
     for my $index (@{ $data->{indices} }) {
+        if (my @undefined_columns = _detect_undefined_columns(\@columns, $index->{fields})) {
+            croak "Index error: Key column [@{[join ', ', @undefined_columns]}] doesn't exist in table]";
+        }
         $table->add_index(%{ $index } );
     }
     for my $constraint (@{ $data->{constraints} }) {
+        my $cols = $constraint->{fields};
+        $cols = [$cols] unless ref $cols;
+        if (my @undefined_columns = _detect_undefined_columns(\@columns, $cols)) {
+            croak "Constraint error: Key column [@{[join ', ', @undefined_columns]}] doesn't exist in table]";
+        }
         $table->add_constraint(%{ $constraint } );
     }
-    $table->primary_key($data->{primary_key}) if $data->{primary_key};
+
+    if (my $pk = $data->{primary_key}) {
+        $pk = [$pk] unless ref $pk;
+        if (my @undefined_columns = _detect_undefined_columns(\@columns, $pk)) {
+            croak "Primary key error: Key column [@{[join ', ', @undefined_columns]}] doesn't exist in table]";
+        }
+        $table->primary_key($data->{primary_key});
+    }
 
     $c->_clear_creating_table;
 }
 sub columns(&) {shift}
+
+sub _detect_undefined_columns {
+    my ($set, $subset) = @_;
+
+    my $diff = Array::Diff->diff([sort @$set], [sort @$subset]);
+    @{$diff->added};
+}
 
 sub column($$;%) {
     my ($column_name, $data_type, %opt) = @_;

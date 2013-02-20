@@ -17,6 +17,7 @@ my $build = Module::Build->new(
         Moo               => '1.000003',
         'SQL::Translator' => '0.11011',
         Clone             => '0.06',
+        'Array::Diff'     => '0',
     },
 
     no_index    => { 'directory' => [ 'inc' ] },
