@@ -1,5 +1,8 @@
 Revision history for Perl extension DBIx::Schema::DSL
 
+0.04    Tue Mar  5 08:02:34 2013
+    - detect invalid column declaring
+
 0.03    Wed Feb 20 11:47:00 2013
     - detect undefind colums specified in index and constraint
 
