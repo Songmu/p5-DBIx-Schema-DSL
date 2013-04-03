@@ -1,5 +1,8 @@
 Revision history for Perl extension DBIx::Schema::DSL
 
+0.05    Wed Apr  3 06:11:19 2013
+    - `default_varchar_size` to 191 when mysql_charset is utf8mb4
+
 0.04    Tue Mar  5 08:02:34 2013
     - detect invalid column declaring
 

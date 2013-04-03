@@ -14,6 +14,7 @@ t/002_dsl.t
 t/003_dsl2.t
 t/004_detect_undefined_column.t
 t/005_invalid_column_declare.t
+t/006_utf8mb4.t
 xt/perlcritic.t
 xt/pod.t
 xt/podcoverage.t
