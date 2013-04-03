@@ -49,6 +49,10 @@ sub add_table_options {
         %{$c->table_extra},
         %opt,
     });
+
+    if ($opt{mysql_charset} && $opt{mysql_charset} eq 'utf8mb4') {
+        $c->default_varchar_size(191);
+    }
 }
 
 sub default_unsigned() {
@@ -160,7 +164,7 @@ sub column($$;%) {
     }
 
     if ($args{data_type} eq 'VARCHAR' && !$args{size}) {
-        $args{size} = 255;
+        $args{size} = $c->default_varchar_size;
     }
 
     if ($args{precision}) {

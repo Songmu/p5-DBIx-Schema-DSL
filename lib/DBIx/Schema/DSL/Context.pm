@@ -89,6 +89,11 @@ has no_fk_translate => (
     },
 );
 
+has default_varchar_size => (
+    is      => 'rw',
+    default => sub { 255 },
+);
+
 no Moo;
 
 sub _creating_table_name {
