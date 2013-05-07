@@ -5,7 +5,7 @@ perl:
   - "5.12"
   - "5.10"
 before_install:
-  - cpanm -n cpanm Devel::Cover::Report::Coveralls
+  - cpanm -n Devel::Cover::Report::Coveralls
 script: perl Build.PL && ./Build build && cover -test -ignore_re '.*' -select_re '^lib/'
 after_success:
   - cover -report coveralls
