@@ -3,7 +3,7 @@ use 5.008_001;
 use strict;
 use warnings;
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 use Carp qw/croak/;
 use Array::Diff;
@@ -340,7 +340,7 @@ DBIx::Schema::DSL - DSL for Database schema declaration
 
 =head1 VERSION
 
-This document describes DBIx::Schema::DSL version 0.01.
+This document describes DBIx::Schema::DSL version 0.06.
 
 =head1 SYNOPSIS
 
@@ -434,47 +434,47 @@ DataType functions are as follows.
 
 =over
 
-=item bigint
+=item C<bigint>
 
-=item binary
+=item C<binary>
 
-=item bit
+=item C<bit>
 
-=item blob
+=item C<blob>
 
-=item char
+=item C<char>
 
-=item date
+=item C<date>
 
-=item datetime
+=item C<datetime>
 
-=item dec
+=item C<dec>
 
-=item decimal
+=item C<decimal>
 
-=item double
+=item C<double>
 
-=item integer
+=item C<integer>
 
-=item number
+=item C<number>
 
-=item numeric
+=item C<numeric>
 
-=item smallint
+=item C<smallint>
 
-=item string
+=item C<string>
 
-=item text
+=item C<text>
 
-=item timestamp
+=item C<timestamp>
 
-=item tinyblob
+=item C<tinyblob>
 
-=item tinyint
+=item C<tinyint>
 
-=item varbinary
+=item C<varbinary>
 
-=item varchar
+=item C<varchar>
 
 =back
 
@@ -515,7 +515,7 @@ There are syntax sugar functions for C<< %option >>.
 
 =item C<< primary_key() >>
 
-('primary_key' => 1)
+    ('primary_key' => 1)
 
 =item C<< pk() >>
 
@@ -523,27 +523,27 @@ Alias of primary_key.
 
 =item C<< unique() >>
 
-('unique' => 1)
+    ('unique' => 1)
 
 =item C<< auto_increment() >>
 
-('auto_increment' => 1)
+    ('auto_increment' => 1)
 
 =item C<< unsigned() >>
 
-('unsigned' => 1)
+    ('unsigned' => 1)
 
 =item C<< signed() >>
 
-('unsigned' => 0)
+    ('unsigned' => 0)
 
 =item C<< null() >>
 
-('null' => 1)
+    ('null' => 1)
 
 =item C<< not_null() >>
 
-('null' => 0)
+    ('null' => 0)
 
 =back
 

@@ -4,7 +4,7 @@ DBIx::Schema::DSL - DSL for Database schema declaration
 
 # VERSION
 
-This document describes DBIx::Schema::DSL version 0.01.
+This document describes DBIx::Schema::DSL version 0.06.
 
 # SYNOPSIS
 
@@ -96,27 +96,27 @@ Declare column. It can be called only in create\_table block.
 
 DataType functions are as follows.
 
-- bigint
-- binary
-- bit
-- blob
-- char
-- date
-- datetime
-- dec
-- decimal
-- double
-- integer
-- number
-- numeric
-- smallint
-- string
-- text
-- timestamp
-- tinyblob
-- tinyint
-- varbinary
-- varchar
+- `bigint`
+- `binary`
+- `bit`
+- `blob`
+- `char`
+- `date`
+- `datetime`
+- `dec`
+- `decimal`
+- `double`
+- `integer`
+- `number`
+- `numeric`
+- `smallint`
+- `string`
+- `text`
+- `timestamp`
+- `tinyblob`
+- `tinyint`
+- `varbinary`
+- `varchar`
 
 ### `primary_key($column_name :Str, (%option :Optional))`
 
@@ -153,35 +153,29 @@ There are syntax sugar functions for `%option`.
 
 - `primary_key()`
 
-    ('primary\_key' => 1)
-
+        ('primary_key' => 1)
 - `pk()`
 
     Alias of primary\_key.
 
 - `unique()`
 
-    ('unique' => 1)
-
+        ('unique' => 1)
 - `auto_increment()`
 
-    ('auto\_increment' => 1)
-
+        ('auto_increment' => 1)
 - `unsigned()`
 
-    ('unsigned' => 1)
-
+        ('unsigned' => 1)
 - `signed()`
 
-    ('unsigned' => 0)
-
+        ('unsigned' => 0)
 - `null()`
 
-    ('null' => 1)
-
+        ('null' => 1)
 - `not_null()`
 
-    ('null' => 0)
+        ('null' => 0)
 
 ## Export Functions for declaring primary\_key and indices
 
