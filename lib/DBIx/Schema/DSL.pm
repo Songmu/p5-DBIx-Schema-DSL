@@ -159,7 +159,7 @@ sub column($$;%) {
         $extra->{unsigned} = delete $args{unsigned};
         $args{extra} = $extra;
     }
-    elsif ($c->default_unsigned && $data_type =~ /int(?:eger)$/) {
+    elsif ($c->default_unsigned && $data_type =~ /int(?:eger)?$/) {
         $args{extra}{unsigned} = 1;
     }
 
