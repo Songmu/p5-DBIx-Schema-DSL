@@ -27,6 +27,7 @@ my @rev_column_sugars = qw/not_null signed/;
 my @export_dsls = qw/
     create_database database    create_table    column      primary_key set_primary_key add_index   add_unique_index
     foreign_key     has_many    has_one         belongs_to  add_table_options   default_unsigned    columns pk  fk
+    default_not_null
 /;
 my @class_methods = qw/context output no_fk_output translate_to translator/;
 sub import {
@@ -57,6 +58,10 @@ sub add_table_options {
 
 sub default_unsigned() {
     caller->context->default_unsigned(1);
+}
+
+sub default_not_null() {
+    caller->context->default_not_null(1);
 }
 
 sub create_table($$) {
@@ -161,6 +166,11 @@ sub column($$;%) {
     }
     elsif ($c->default_unsigned && $data_type =~ /int(?:eger)?$/) {
         $args{extra}{unsigned} = 1;
+    }
+
+    if ( !exists $args{$map{null}} && $c->default_not_null ) {
+        my $val = not_null();
+        $args{$map{null}} = $val;
     }
 
     if ($args{data_type} eq 'VARCHAR' && !$args{size}) {
@@ -410,6 +420,11 @@ Set global setting of table->extra for SQL::Translator::Table
 
 Automatically set unsigned when declaring integer columns.
 If you want to declare singed columns, using `singed` sugar.
+
+=head3 C<< default_not_null() >>
+
+Automatically set not null.
+If you want to declare null columns, using `null` sugar.
 
 =head3 C<< create_table($table_name :Str, $columns :CodeRef) >>
 
