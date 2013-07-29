@@ -75,6 +75,11 @@ Set global setting of table->extra for SQL::Translator::Table
 Automatically set unsigned when declaring integer columns.
 If you want to declare singed columns, using \`singed\` sugar.
 
+### `default_not_null()`
+
+Automatically set not null.
+If you want to declare null columns, using \`null\` sugar.
+
 ### `create_table($table_name :Str, $columns :CodeRef)`
 
 Declare table.

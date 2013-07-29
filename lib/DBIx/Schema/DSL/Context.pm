@@ -64,6 +64,10 @@ has default_unsigned => (
     is => 'rw',
 );
 
+has default_not_null => (
+    is => 'rw',
+);
+
 has no_fk_translator => (
     is  => 'lazy',
     default => sub {
