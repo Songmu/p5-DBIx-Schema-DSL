@@ -295,7 +295,7 @@ sub has_many {
     my ($table, %opt) = @_;
 
     my $columns         = $opt{column}         || 'id';
-    my $foreign_columns = $opt{foregin_column} || $c->_creating_table_name .'_id';
+    my $foreign_columns = $opt{foreign_column} || $c->_creating_table_name .'_id';
 
     @_ = ($columns, $table, $foreign_columns);
     goto \&foreign_key;
@@ -307,7 +307,7 @@ sub has_one {
     my ($table, %opt) = @_;
 
     my $columns         = $opt{column}         || 'id';
-    my $foreign_columns = $opt{foregin_column} || $c->_creating_table_name .'_id';
+    my $foreign_columns = $opt{foreign_column} || $c->_creating_table_name .'_id';
 
     @_ = ($columns, $table, $foreign_columns);
     goto \&foreign_key;
@@ -317,7 +317,7 @@ sub belongs_to {
     my ($table, %opt) = @_;
 
     my $columns         = $opt{column}         || "${table}_id";
-    my $foreign_columns = $opt{foregin_column} || 'id';
+    my $foreign_columns = $opt{foreign_column} || 'id';
 
     @_ = ($columns, $table, $foreign_columns);
     goto \&foreign_key;
