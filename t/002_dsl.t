@@ -22,7 +22,7 @@ create_table book => columns {
     integer 'author_id';
     decimal 'price', size => [4,2];
 
-    belongs_to 'author';
+    belongs_to 'author', on_delete => 'cascade';
 };
 
 create_table author => columns {
@@ -55,7 +55,11 @@ isa_ok $c->translator, 'SQL::Translator';
 isa_ok $c->schema,     'SQL::Translator::Schema';
 
 ok $c->no_fk_translate;
-ok $c->translate and note $c->translate;
+ok my $ddl = $c->translate;
+note $ddl;
+
+like $ddl, qr/ON DELETE cascade/msi;
+
 ok $c->no_fk_translate ne $c->translate;
 
 done_testing;
