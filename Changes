@@ -2,6 +2,9 @@ Revision history for Perl extension DBIx::Schema::DSL
 
 {{$NEXT}}
 
+0.09 2013-11-06T06:14:20Z
+    - suppress warn message of tinyint
+
 0.08 2013-09-25T16:39:34Z
     - accepts foreign constraints options
     - fix typo
