@@ -21,7 +21,7 @@ sub context {
 # don't override CORE::int
 use Pod::Functions ();
 my @column_methods =
-    grep {!$Pod::Functions::Type{$_}} keys(%SQL::Translator::Schema::Field::type_mapping), qw/tinyint string number/;
+    grep {!$Pod::Functions::Type{$_}} keys(%SQL::Translator::Schema::Field::type_mapping), qw/string number/;
 my @column_sugars  = qw/unique auto_increment unsigned null/;
 my @rev_column_sugars = qw/not_null signed/;
 my @export_dsls = qw/
