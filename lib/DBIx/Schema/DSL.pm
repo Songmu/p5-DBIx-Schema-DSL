@@ -168,9 +168,8 @@ sub column($$;%) {
         $args{extra}{unsigned} = 1;
     }
 
-    if ( !exists $args{$map{null}} && $c->default_not_null ) {
-        my $val = not_null();
-        $args{$map{null}} = $val;
+    if ( !exists $args{is_nullable} && $c->default_not_null ) {
+        $args{is_nullable} = 0;
     }
 
     if ($args{data_type} eq 'VARCHAR' && !$args{size}) {
@@ -194,7 +193,7 @@ sub column($$;%) {
         };
     }
 
-    # explicitly add `DEFAULT NULL` if is_nullable and defalt_value not specified
+    # explicitly add `DEFAULT NULL` if is_nullable and not specified default_value
     if ($args{is_nullable} && !exists $args{default_value} && $args{data_type} !~ /^(?:TEXT|BLOB)$/ ) {
         $args{default_value} = \'NULL';
     }
