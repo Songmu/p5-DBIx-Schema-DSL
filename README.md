@@ -4,7 +4,7 @@ DBIx::Schema::DSL - DSL for Database schema declaration
 
 # VERSION
 
-This document describes DBIx::Schema::DSL version 0.09.
+This document describes DBIx::Schema::DSL version 0.10.
 
 # SYNOPSIS
 

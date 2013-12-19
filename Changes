@@ -2,6 +2,9 @@ Revision history for Perl extension DBIx::Schema::DSL
 
 {{$NEXT}}
 
+0.10 2013-12-19T07:24:59Z
+    - explicitly add `DEFAULT NULL` if `is_nullable` and not specified `default_value`
+
 0.09 2013-11-06T06:14:20Z
     - suppress warn message of tinyint
 
