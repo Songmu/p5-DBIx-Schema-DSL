@@ -27,6 +27,7 @@ create_database 'my_database';
 create_table 'book' => columns {
     integer 'id',   primary_key, auto_increment;
     varchar 'name';
+    varchar 'explanation', null;
 };
 
 
@@ -44,7 +45,7 @@ subtest 'NoSetDefaultSchema' => sub {
     note $output_schema;
     like( $output_schema, qr/`id` INTEGER NOT NULL auto_increment,/);
     like( $output_schema, qr/`name` VARCHAR\(255\) NULL,/ );
-
+    like( $output_schema, qr/`explanation` VARCHAR\(255\) NULL DEFAULT NULL,/ );
 };
 
 done_testing;

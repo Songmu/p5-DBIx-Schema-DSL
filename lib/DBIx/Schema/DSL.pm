@@ -194,6 +194,11 @@ sub column($$;%) {
         };
     }
 
+    # explicitly add `DEFAULT NULL` if is_nullable and defalt_value not specified
+    if ($args{is_nullable} && !exists $args{default_value} && $args{data_type} !~ /^(?:TEXT|BLOB)$/ ) {
+        $args{default_value} = \'NULL';
+    }
+
     push @{$creating_data->{columns}}, \%args;
 }
 
