@@ -14,6 +14,7 @@ create_table user => columns {
     varchar 'name', null => 0;
     varchar 'description', null => 1;
     text    'profile';
+    timestamp 'timestamp', on_update => 'CURRENT_TIMESTAMP', default =>  'CURRENT_TIMESTAMP';
 };
 
 create_table book => columns {

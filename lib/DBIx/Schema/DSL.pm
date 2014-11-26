@@ -201,6 +201,10 @@ sub column($$;%) {
     if ($args{data_type} eq 'TIMESTAMP' && $args{on_update} ) {
         $args{extra}{'on update'} = delete $args{on_update};
     }
+    if ($args{data_type} eq 'TIMESTAMP' && $args{default_value} eq 'CURRENT_TIMESTAMP') {
+        $args{default_value} = \'CURRENT_TIMESTAMP';
+    }
+
 
     push @{$creating_data->{columns}}, \%args;
 }
