@@ -194,7 +194,7 @@ sub column($$;%) {
     }
 
     # explicitly add `DEFAULT NULL` if is_nullable and not specified default_value
-    if ($args{is_nullable} && !exists $args{default_value} && $args{data_type} !~ /^(?:TEXT|BLOB)$/ ) {
+    if ($args{is_nullable} && !exists $args{default_value} && $args{data_type} !~ /^(?:TINY|MEDIUM|LONG)?(?:TEXT|BLOB)$/ ) {
         $args{default_value} = \'NULL';
     }
 
