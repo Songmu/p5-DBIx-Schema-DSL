@@ -14,7 +14,7 @@ create_table user => columns {
     varchar 'name', null => 0;
     varchar 'description', null => 1;
     text    'profile';
-    timestamp 'timestamp', on_update => 'CURRENT_TIMESTAMP';
+    timestamp 'timestamp', on_update => 'CURRENT_TIMESTAMP', default => \'CURRENT_TIMESTAMP';
 };
 
 create_table book => columns {
@@ -60,6 +60,7 @@ ok my $ddl = $c->translate;
 note $ddl;
 
 like $ddl, qr/ON DELETE cascade/msi;
+like $ddl, qr/on update CURRENT_TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP/msi;
 
 ok $c->no_fk_translate ne $c->translate;
 
