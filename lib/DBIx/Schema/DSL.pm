@@ -461,7 +461,7 @@ Declare column. It can be called only in create_table block.
 
 C<< $data_type >> strings (ex. C<< integer >> ) are can be used as a function.
 
-C<< integer($column_name, (%option)) >> is same as C<< column($column_name, (%option)) >>
+C<< integer($column_name, (%option)) >> is same as C<< column('integer', $column_name, (%option)) >>
 
 DataType functions are as follows.
 

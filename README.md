@@ -97,7 +97,7 @@ Declare column. It can be called only in create\_table block.
 
 `$data_type` strings (ex. `integer` ) are can be used as a function.
 
-`integer($column_name, (%option))` is same as `column($column_name, (%option))`
+`integer($column_name, (%option))` is same as `column('integer', $column_name, (%option))`
 
 DataType functions are as follows.
 
