@@ -4,7 +4,7 @@ DBIx::Schema::DSL - DSL for Database schema declaration
 
 # VERSION
 
-This document describes DBIx::Schema::DSL version 0.10.
+This document describes DBIx::Schema::DSL version 0.11.
 
 # SYNOPSIS
 
@@ -51,7 +51,7 @@ This document describes DBIx::Schema::DSL version 0.10.
 
 This module provides DSL for database schema declaration like ruby's ActiveRecord::Schema.
 
-__THE SOFTWARE IS IT'S IN ALPHA QUALITY. IT MAY CHANGE THE API WITHOUT NOTICE.__
+**THE SOFTWARE IS IT'S IN ALPHA QUALITY. IT MAY CHANGE THE API WITHOUT NOTICE.**
 
 # INTERFACE
 
@@ -122,6 +122,10 @@ DataType functions are as follows.
 - `tinyint`
 - `varbinary`
 - `varchar`
+- `float`
+- `real`
+- `enum`
+- `set`
 
 ### `primary_key($column_name :Str, (%option :Optional))`
 
@@ -150,7 +154,7 @@ mappings are:
     auto_increment => 'is_auto_increment',
     unsigned       => {extra => {unsigned => 1}},
     on_update      => {extra => {'on update' => 'hoge'}},
-    precisition    => 'size[0]',
+    precision      => 'size[0]',
     scale          => 'size[1]',
 
 #### Syntax sugars for `%option`
@@ -160,6 +164,7 @@ There are syntax sugar functions for `%option`.
 - `primary_key()`
 
         ('primary_key' => 1)
+
 - `pk()`
 
     Alias of primary\_key.
@@ -167,18 +172,23 @@ There are syntax sugar functions for `%option`.
 - `unique()`
 
         ('unique' => 1)
+
 - `auto_increment()`
 
         ('auto_increment' => 1)
+
 - `unsigned()`
 
         ('unsigned' => 1)
+
 - `signed()`
 
         ('unsigned' => 0)
+
 - `null()`
 
         ('null' => 1)
+
 - `not_null()`
 
         ('null' => 0)
@@ -246,7 +256,7 @@ to cpan-RT.
 
 # SEE ALSO
 
-[perl](http://search.cpan.org/perldoc?perl)
+[perl](https://metacpan.org/pod/perl)
 
 # AUTHOR
 

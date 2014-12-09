@@ -2,6 +2,10 @@ Revision history for Perl extension DBIx::Schema::DSL
 
 {{$NEXT}}
 
+0.11 2014-12-09T12:11:29Z
+    - support 'ON UPDATE' option (tokubass++)
+    - ENUM and SET support
+
 0.10 2013-12-19T07:24:59Z
     - explicitly add `DEFAULT NULL` if `is_nullable` and not specified `default_value`
 
