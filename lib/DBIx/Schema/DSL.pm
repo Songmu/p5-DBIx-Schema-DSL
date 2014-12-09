@@ -198,6 +198,11 @@ sub column($$;%) {
         $args{default_value} = \'NULL';
     }
 
+    if ($args{on_update}) {
+        $args{extra}{'on update'} = delete $args{on_update};
+    }
+
+
     push @{$creating_data->{columns}}, \%args;
 }
 
@@ -528,6 +533,7 @@ mappings are:
     primary_key    => 'is_primary_key',
     auto_increment => 'is_auto_increment',
     unsigned       => {extra => {unsigned => 1}},
+    on_update      => {extra => {'on update' => 'hoge'}},
     precisition    => 'size[0]',
     scale          => 'size[1]',
 
