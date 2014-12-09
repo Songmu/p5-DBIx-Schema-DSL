@@ -534,7 +534,7 @@ mappings are:
     auto_increment => 'is_auto_increment',
     unsigned       => {extra => {unsigned => 1}},
     on_update      => {extra => {'on update' => 'hoge'}},
-    precisition    => 'size[0]',
+    precision      => 'size[0]',
     scale          => 'size[1]',
 
 =head4 Syntax sugars for C<< %option >>
