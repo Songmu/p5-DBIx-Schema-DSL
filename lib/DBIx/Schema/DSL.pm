@@ -21,7 +21,7 @@ sub context {
 # don't override CORE::int
 use Pod::Functions ();
 my @column_methods =
-    grep {!$Pod::Functions::Type{$_}} grep { /^[a-zA-Z_][0-9a-zA-Z_]*$/ } keys(%SQL::Translator::Schema::Field::type_mapping), qw/string number/;
+    grep {!$Pod::Functions::Type{$_}} grep { /^[a-zA-Z_][0-9a-zA-Z_]*$/ } keys(%SQL::Translator::Schema::Field::type_mapping), qw/string number enum set/;
 my @column_sugars  = qw/unique auto_increment unsigned null/;
 my @rev_column_sugars = qw/not_null signed/;
 my @export_dsls = qw/
@@ -127,6 +127,12 @@ sub _detect_undefined_columns {
 sub column($$;%) {
     my ($column_name, $data_type, @opt) = @_;
     croak '`column` function called in non void context' if defined wantarray;
+
+    if (ref $opt[0] eq 'ARRAY') {
+        # enum or set
+        unshift @opt, 'list';
+    }
+
     if (@opt % 2) {
         croak "odd number elements are assined to options. arguments: [@{[join ', ', @_]}]";
     }
@@ -145,7 +151,6 @@ sub column($$;%) {
 
     my %map = (
         null           => 'is_nullable',
-        size           => 'size',
         limit          => 'size',
         default        => 'default_value',
         unique         => 'is_unique',
@@ -159,14 +164,22 @@ sub column($$;%) {
         %args,
         %opt
     );
+
     if (exists $args{unsigned}) {
-        my $extra = $args{extra} || {};
-        $extra->{unsigned} = delete $args{unsigned};
-        $args{extra} = $extra;
+        $args{extra}{unsigned} = delete $args{unsigned};
     }
     elsif ($c->default_unsigned && $data_type =~ /int(?:eger)?$/) {
         $args{extra}{unsigned} = 1;
     }
+
+    if (exists $args{on_update}) {
+        $args{extra}{'on update'} = delete $args{on_update};
+    }
+
+    if (exists $args{list}) {
+        $args{extra}{list} = delete $args{list};
+    }
+
 
     if ( !exists $args{is_nullable} && $c->default_not_null ) {
         $args{is_nullable} = 0;
@@ -197,11 +210,6 @@ sub column($$;%) {
     if ($args{is_nullable} && !exists $args{default_value} && $args{data_type} !~ /^(?:TINY|MEDIUM|LONG)?(?:TEXT|BLOB)$/ ) {
         $args{default_value} = \'NULL';
     }
-
-    if ($args{on_update}) {
-        $args{extra}{'on update'} = delete $args{on_update};
-    }
-
 
     push @{$creating_data->{columns}}, \%args;
 }
