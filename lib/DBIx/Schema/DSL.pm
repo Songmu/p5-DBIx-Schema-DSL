@@ -432,7 +432,7 @@ Set database name. (Optional)
 
 =head3 C<< add_table_options(%opt :Hash) >>
 
-Set global setting of table->extra for SQL::Translator::Table
+Set global setting of table->extra for SQL::Translator::Schema::Table
 
 =head3 C<< default_unsigned() >>
 
@@ -533,7 +533,7 @@ Specify column using C<< %option >> hash.
 
     integer 'id', primary_key => 1, default => 0;
 
-Each keyword has mapping to argument for SQL::Translator::Field.
+Each keyword has mapping to argument for SQL::Translator::Schema::Field.
 
 mappings are:
 
