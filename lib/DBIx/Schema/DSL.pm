@@ -3,7 +3,7 @@ use 5.008_001;
 use strict;
 use warnings;
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 
 use Carp qw/croak/;
 use Array::Diff;
@@ -368,7 +368,7 @@ DBIx::Schema::DSL - DSL for Database schema declaration
 
 =head1 VERSION
 
-This document describes DBIx::Schema::DSL version 0.11.
+This document describes DBIx::Schema::DSL version 0.12.
 
 =head1 SYNOPSIS
 

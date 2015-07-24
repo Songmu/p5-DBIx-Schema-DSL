@@ -2,6 +2,9 @@ Revision history for Perl extension DBIx::Schema::DSL
 
 {{$NEXT}}
 
+0.12 2015-07-24T04:18:04Z
+    - fix test only (karupanerura++)
+
 0.11 2014-12-09T12:11:29Z
     - support 'ON UPDATE' option (tokubass++)
     - ENUM and SET support
