@@ -67,7 +67,7 @@ package main;
 my $output = Hoge->output;
 ok $output and note $output;
 ok(Hoge->no_fk_output);
-ok(Hoge->translate_to('HTML'));
+ok(Hoge->translate_to('POD')) or diag(Hoge->translator->error);
 
 like(Fuga->output, qr/player/ms);
 unlike(Fuga->output, qr/user_purchase/ms);
