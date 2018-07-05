@@ -1,9 +1,9 @@
 package DBIx::Schema::DSL;
-use 5.008_001;
+use 5.008_005;
 use strict;
 use warnings;
 
-our $VERSION = '0.12';
+our $VERSION = '1.0000';
 
 use Carp qw/croak/;
 use Array::Diff;
@@ -371,7 +371,7 @@ DBIx::Schema::DSL - DSL for Database schema declaration
 
 =head1 VERSION
 
-This document describes DBIx::Schema::DSL version 0.12.
+This document describes DBIx::Schema::DSL version 1.0000.
 
 =head1 SYNOPSIS
 
