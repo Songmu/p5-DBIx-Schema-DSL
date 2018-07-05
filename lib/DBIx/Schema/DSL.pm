@@ -13,7 +13,7 @@ use SQL::Translator::Schema::Field;
 
 sub context {
     my $pkg = shift;
-    die 'something wrong when calling context method.' if $pkg eq __PACKAGE__;
+    die 'something went wrong when calling context method.' if $pkg eq __PACKAGE__;
     no strict 'refs';
     ${"$pkg\::CONTEXT"} ||= DBIx::Schema::DSL::Context->new;
 }
@@ -21,7 +21,9 @@ sub context {
 # don't override CORE::int
 use Pod::Functions ();
 my @column_methods =
-    grep {!$Pod::Functions::Type{$_}} grep { /^[a-zA-Z_][0-9a-zA-Z_]*$/ } keys(%SQL::Translator::Schema::Field::type_mapping), qw/string number enum set/;
+    grep {!$Pod::Functions::Type{$_}}
+    grep { /^[a-zA-Z_][0-9a-zA-Z_]*$/ }
+    keys(%SQL::Translator::Schema::Field::type_mapping), qw/string number enum set/;
 my @column_sugars  = qw/unique auto_increment unsigned null/;
 my @rev_column_sugars = qw/not_null signed/;
 my @export_dsls = qw/
@@ -114,6 +116,7 @@ sub create_table($$) {
     }
 
     $c->_clear_creating_table;
+    1;
 }
 sub columns(&) {shift}
 
